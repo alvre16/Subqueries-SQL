@@ -1,0 +1,44 @@
+SELECT COUNT(prod_name) AS count_prod, AVG(prod_price) AS Avg_prod_price, MIN(prod_price) AS min_prod_price, MAX(prod_price) AS max_prod_price
+FROM Products
+
+SELECT prod_name
+FROM Products
+WHERE vend_id IN (SELECT vend_id
+				  FROM OrderItems
+				  WHERE quantity>3
+				  GROUP BY prod_id)
+
+SELECT prod_name
+FROM Products
+WHERE vend_id IN (SELECT vend_id
+				  FROM Vendors
+				  WHERE vend_name='Bears R US')
+
+SELECT AVG(prod_price) AS avg_prod_price,(SELECT COUNT(prod_name)
+										  FROM Products
+										  WHERE prod_id IN (SELECT prod_id
+										   FROM OrderItems
+										   WHERE order_num IN (SELECT order_num
+															 FROM Orders
+															 WHERE cust_id<> 'NULL')))
+FROM Products
+
+SELECT SUM(quantity) AS sum_quantity
+FROM OrderItems
+WHERE prod_id IN (SELECT prod_id
+				  FROM Products
+				  WHERE vend_id IN (SELECT vend_id
+									FROM Vendors
+									WHERE vend_name= 'Doll House Inc.'));
+SELECT cust_name
+FROM Customers
+WHERE cust_id IN (SELECT cust_id
+				  FROM Orders
+				  WHERE order_num IN (SELECT order_num
+									  FROM OrderItems
+									  WHERE quantity>2 AND prod_id IN (SELECT prod_id
+																   	   FROM Products
+																	   WHERE vend_id IN (SELECT vend_id
+																						 FROM Vendors
+																						 WHERE vend_name='Doll House Inc.'))));
+                  
